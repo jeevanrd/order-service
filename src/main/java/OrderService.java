@@ -37,7 +37,7 @@ public class OrderService extends Application<ServicesConfiguration> {
     private MongoController setUpMongoDbConnection(Environment environment, ServicesConfiguration serviceConfiguration) throws UnknownHostException {
         Connection mongoConnection = new Connection(serviceConfiguration);
         LOG.info("Using mongodb at " + mongoConnection.getHost() + ", port: " + mongoConnection.getPort() + ", db: " + mongoConnection.getDbName());
-        MongoController dbController = new MongoController(mongoConnection);
+        MongoController dbController = new MongoController(mongoConnection, serviceConfiguration.dbUri);
         MongoManaged mongoManaged = new MongoManaged(dbController.getMongo());
         environment.lifecycle().manage(mongoManaged);
         environment.healthChecks().register("database", new MongoHealthCheck(dbController.getMongo()));

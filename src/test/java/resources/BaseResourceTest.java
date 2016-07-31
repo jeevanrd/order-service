@@ -21,7 +21,7 @@ public class BaseResourceTest {
 
     @BeforeClass
     public static void initDb() throws IOException {
-        dataStore = new MongoController(new Connection(dbName, TEST_MONGO_HOST, TEST_MONGO_PORT)).getDataStore();
+        dataStore = new MongoController(new Connection(dbName, TEST_MONGO_HOST, TEST_MONGO_PORT), null).getDataStore();
         orderDao = new OrderDao(dataStore);
     }
 
