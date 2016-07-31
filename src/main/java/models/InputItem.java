@@ -1,7 +1,5 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class InputItem extends Dimensions {
     public InputItem(){}
 

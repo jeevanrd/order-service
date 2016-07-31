@@ -1,10 +1,8 @@
 package models;
 
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Entity;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity(noClassnameStored = true)
