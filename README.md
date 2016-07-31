@@ -4,8 +4,10 @@ Few Assumptions made
 
 1.Each Item ordered by customer can fit into one carton
 2.Slot duration is for 2 hours. Only the van with all filled cartons will departure.
-3.All the departure vans will be available at the start time of the next Slot. That means all the departed vans will come back 
- and available for service.
+3.All the departure vans will be available for service at the start time of the next Slot. That means all the departed vans will come back before the end time of the current slot 
+
+Why this assumption made?
+Don't know the van behavior completely.
  
  Based on the above assumptions the current api service is available
  
