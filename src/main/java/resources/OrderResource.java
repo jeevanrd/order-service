@@ -1,6 +1,7 @@
 package resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import config.Constants;
 import dao.OrderDao;
 import models.*;
 import org.mongodb.morphia.Datastore;
@@ -10,9 +11,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static utils.Utils.asJson;
 import static utils.Utils.fromJson;
@@ -21,23 +23,14 @@ import static utils.Utils.fromJson;
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
     public OrderDao orderDao;
-    public int VEHICLE_COUNT = 4;
-    public int CARTON_COUNT = 20;
-    public int CARTON_HEIGHT = 15;
-    public int CARTON_WIDTH = 30;
-    public int CARTON_BREADTH = 15;
-    public int SLOT_START_TIME = 9;
-    public int SLOT_END_TIME = 22;
-    public int SLOT_DURATION = 2;
-    public List<Integer> SLOT_NON_AVAILABILITY = Arrays.asList(13);
     public SlotVehicle vehicle;
     public List<Slot> slots;
 
 
-    public OrderResource(Datastore datastore) {
-        Dimensions cartonDimensions = new Dimensions(CARTON_HEIGHT, CARTON_WIDTH, CARTON_BREADTH);
-        this.vehicle = new SlotVehicle(VEHICLE_COUNT, CARTON_COUNT, cartonDimensions);
-        this.slots = new SlotSchedule(SLOT_START_TIME, SLOT_END_TIME, SLOT_DURATION, SLOT_NON_AVAILABILITY).getSlots();
+    public OrderResource(Datastore datastore, Constants constantsobj) {
+        Dimensions cartonDimensions = new Dimensions(constantsobj.CARTON_HEIGHT, constantsobj.CARTON_WIDTH, constantsobj.CARTON_BREADTH);
+        this.vehicle = new SlotVehicle(constantsobj.VEHICLE_COUNT, constantsobj.CARTON_COUNT, cartonDimensions);
+        this.slots = new SlotSchedule(constantsobj.SLOT_START_TIME, constantsobj.SLOT_END_TIME, constantsobj.SLOT_DURATION, constantsobj.SLOT_NON_AVAILABILITY).getSlots();
         this.orderDao = new OrderDao(datastore);
     }
 
@@ -45,9 +38,12 @@ public class OrderResource {
     public Response createOrder(String payload) throws IOException {
         HashMap map = fromJson(payload, HashMap.class);
         List<InputItem> items = fromJson(asJson(map.get("items")), new TypeReference<List<InputItem>>() {});
-        if(items.size() == 0) {
+        if(items == null || items.size() == 0) {
             throwResponseWithStatus(Response.Status.BAD_REQUEST, "Please add some items to place order");
         }
+
+        if(this.slots.size() == 0)
+            throwResponseWithStatus(Response.Status.PRECONDITION_FAILED, "No slot available");
 
         int maxCartonCount = vehicle.getMaxCartonCount();
         Boolean created = false;
@@ -86,7 +82,23 @@ public class OrderResource {
         Slot orderSlot = newOrder.getSlot();
         output.put("slot", orderSlot.getStartTime()  + "-" + (orderSlot.getDuration() + orderSlot.getStartTime()) + " schedule");
 
-        return Response.ok().build();
+        return Response.ok().entity(output).build();
+    }
+
+
+    @GET
+    public Response getOrders() throws IOException {
+        List<Order> orders = this.orderDao.createQuery().asList();
+        List<Map<String, Object>> outputs = new ArrayList<>();
+        for(Order order : orders) {
+            HashMap<String,Object> output = new HashMap<>();
+            output.put("orderId", order.getId());
+            output.put("items", order.getItems());
+            Slot orderSlot = order.getSlot();
+            output.put("slot", orderSlot.getStartTime()  + "-" + (orderSlot.getDuration() + orderSlot.getStartTime()) + " schedule");
+            outputs.add(output);
+        }
+        return Response.ok().entity(outputs).build();
     }
 
     public static void throwResponseWithStatus(Response.Status status, String message) {
