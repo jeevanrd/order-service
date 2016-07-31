@@ -19,7 +19,7 @@ Don't know the van behavior completely.
  
  To run api from commandLine
  First create a fat jar using
- >> mvn -P fatjar clean package
+ mvn -P fatjar clean package
  
  To run the service
  java -server  -cp target/order-1.0-SNAPSHOT.jar OrderService
