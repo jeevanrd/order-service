@@ -17,7 +17,7 @@ public class MongoController {
         if (connection.getHost() == null) {
             mongoClient = new MongoClient();
         } else {
-            if(dbUri == null) {
+            if(dbUri != null) {
                 MongoClientURI uri = new MongoClientURI("mongodb://root:root@ds139425.mlab.com:39425/orderdb",
                         MongoClientOptions.builder()
                         .connectionsPerHost(600));
