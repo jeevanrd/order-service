@@ -1,1 +1,0 @@
-web: java -server  -cp target/order-1.0-SNAPSHOT.jar OrderService

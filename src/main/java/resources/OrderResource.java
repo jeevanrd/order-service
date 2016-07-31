@@ -92,7 +92,7 @@ public class OrderResource {
         List<Map<String, Object>> outputs = new ArrayList<>();
         for(Order order : orders) {
             HashMap<String,Object> output = new HashMap<>();
-            output.put("orderId", order.getId());
+            output.put("orderId", order.getId().toString());
             output.put("items", order.getItems());
             Slot orderSlot = order.getSlot();
             output.put("slot", orderSlot.getStartTime()  + "-" + (orderSlot.getDuration() + orderSlot.getStartTime()) + " schedule");
