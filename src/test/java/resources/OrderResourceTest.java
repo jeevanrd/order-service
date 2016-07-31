@@ -1,7 +1,7 @@
 package resources;
 
 import com.google.common.collect.ImmutableMap;
-import config.Constants;
+import config.AppConstants;
 import io.dropwizard.configuration.ConfigurationException;
 import models.InputItem;
 import models.Order;
@@ -26,14 +26,14 @@ import static utils.Utils.asJson;
 
 public class OrderResourceTest extends BaseResourceTest {
     private OrderResource orderResource;
-    private Constants constantsObj;
+    private AppConstants constantsObj;
 
     @Rule
     public ExpectedException should = ExpectedException.none();
 
     @Before
     public void setUp() throws IOException, ConfigurationException {
-        Constants constantsObj = new Constants();
+        AppConstants constantsObj = new AppConstants();
         int currentHour = DateTime.now().getHourOfDay();
         constantsObj.CARTON_COUNT = 2;
         constantsObj.VEHICLE_COUNT = 1;

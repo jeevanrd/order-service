@@ -4,7 +4,7 @@ package config;
 import java.util.Arrays;
 import java.util.List;
 
-public class Constants {
+public class AppConstants {
     public int VEHICLE_COUNT =  4;
     public int CARTON_COUNT = 20;
     public int CARTON_HEIGHT = 15;

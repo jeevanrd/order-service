@@ -1,7 +1,7 @@
 package resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import config.Constants;
+import config.AppConstants;
 import dao.OrderDao;
 import models.*;
 import org.mongodb.morphia.Datastore;
@@ -27,7 +27,7 @@ public class OrderResource {
     public List<Slot> slots;
 
 
-    public OrderResource(Datastore datastore, Constants constantsobj) {
+    public OrderResource(Datastore datastore, AppConstants constantsobj) {
         Dimensions cartonDimensions = new Dimensions(constantsobj.CARTON_HEIGHT, constantsobj.CARTON_WIDTH, constantsobj.CARTON_BREADTH);
         this.vehicle = new SlotVehicle(constantsobj.VEHICLE_COUNT, constantsobj.CARTON_COUNT, cartonDimensions);
         this.slots = new SlotSchedule(constantsobj.SLOT_START_TIME, constantsobj.SLOT_END_TIME, constantsobj.SLOT_DURATION, constantsobj.SLOT_NON_AVAILABILITY).getSlots();

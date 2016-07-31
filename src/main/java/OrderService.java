@@ -1,4 +1,4 @@
-import config.Constants;
+import config.AppConstants;
 import config.ServicesConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -31,7 +31,7 @@ public class OrderService extends Application<ServicesConfiguration> {
     public void run(ServicesConfiguration configuration, Environment environment) throws Exception {
         MongoController mongoController = setUpMongoDbConnection(environment, configuration);
         dataStore = mongoController.getDataStore();
-        environment.jersey().register(new OrderResource(dataStore, new Constants()));
+        environment.jersey().register(new OrderResource(dataStore, new AppConstants()));
     }
 
     private MongoController setUpMongoDbConnection(Environment environment, ServicesConfiguration serviceConfiguration) throws UnknownHostException {
