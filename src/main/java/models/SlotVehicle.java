@@ -1,6 +1,10 @@
 package models;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Id;
+
 public class SlotVehicle {
+
     private int cartonCount;
 
     private int vehicleCount;
@@ -35,5 +39,9 @@ public class SlotVehicle {
 
     public void setVehicleCount(int vehicleCount) {
         this.vehicleCount = vehicleCount;
+    }
+
+    public int getMaxCartonCount() {
+        return this.vehicleCount * this.cartonCount;
     }
 }

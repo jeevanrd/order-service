@@ -5,6 +5,13 @@ public class Slot {
 
     private int startTime;
 
+    public Slot() {}
+
+    public Slot(int startTime, int duration) {
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
     public Integer getDuration() {
         return duration;
     }

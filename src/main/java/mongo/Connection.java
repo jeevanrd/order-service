@@ -11,7 +11,13 @@ public class Connection {
     public Connection(String dbName){
         this.dbName = dbName;
     }
-    
+
+    public Connection(String dbName, String host, int port) {
+        this.dbName = dbName;
+        this.host = host;
+        this.port = port;
+    }
+
     public Connection(ServicesConfiguration configuration) {
         this.dbName = configuration.mongodb;
         this.host = configuration.mongohost;

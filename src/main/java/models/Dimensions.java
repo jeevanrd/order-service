@@ -12,6 +12,8 @@ public class Dimensions {
     @JsonProperty
     private int breadth;
 
+    public Dimensions() {}
+
     public Dimensions(int height, int width, int breadth) {
         this.height = height;
         this.width = width;

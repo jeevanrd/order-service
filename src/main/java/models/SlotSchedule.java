@@ -1,6 +1,8 @@
 package models;
 
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
+import org.mongodb.morphia.annotations.Id;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,5 +55,22 @@ public class SlotSchedule {
 
     public void setNonAvailabilityTimings(List<Integer> nonAvailabilityTimings) {
         this.nonAvailabilityTimings = nonAvailabilityTimings;
+    }
+
+    public List<Slot> getSlots() {
+        int currentHour = DateTime.now().getHourOfDay();
+        List<Slot> slots = new ArrayList<>();
+        for(int i = this.start; i< this.end; i+= this.duration) {
+
+            if(currentHour > (i + this.duration))
+                continue;
+
+            if(this.nonAvailabilityTimings.contains(i)) {
+                i++;
+            }
+            Slot slot = new Slot(i, this.duration);
+            slots.add(slot);
+        }
+        return slots;
     }
 }
