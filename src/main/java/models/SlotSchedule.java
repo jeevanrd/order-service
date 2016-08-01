@@ -60,7 +60,7 @@ public class SlotSchedule {
         List<Slot> slots = new ArrayList<>();
         for(int i = this.start; i< this.end; i+= this.duration) {
 
-            if(currentHour > (i + this.duration))
+            if(!((i + this.duration) > currentHour))
                 continue;
 
             if(this.nonAvailabilityTimings.contains(i)) {
