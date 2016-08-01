@@ -1,1 +1,1 @@
-web: java -server  -cp order-1.0-SNAPSHOT.jar OrderService
+web: java -Ddw.server.connector.port=$PORT -server  -cp order-1.0-SNAPSHOT.jar OrderService
