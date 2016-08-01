@@ -1,5 +1,7 @@
 package models;
 
+import org.joda.time.DateTime;
+
 public class Slot {
     private int duration;
 
@@ -27,4 +29,11 @@ public class Slot {
     public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
+
+
+    public Boolean slotValid() {
+        int currentHour = DateTime.now().getHourOfDay();
+        return (this.startTime + this.duration) > currentHour;
+    }
+
 }

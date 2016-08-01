@@ -55,17 +55,29 @@ public class SlotSchedule {
         this.nonAvailabilityTimings = nonAvailabilityTimings;
     }
 
+    public List<Slot> getAvailableSlots() {
+        List<Slot> slots = getSlots();
+        List<Slot> availableSlots = new ArrayList<>();
+        for(Slot slot: slots) {
+            if (slot.slotValid())
+                availableSlots.add(slot);
+        }
+
+        return availableSlots;
+    }
+
     public List<Slot> getSlots() {
         int currentHour = DateTime.now().getHourOfDay();
         List<Slot> slots = new ArrayList<>();
-        for(int i = this.start; i< this.end; i+= this.duration) {
+        if(this.end < this.start)
+            return slots;
 
-            if(!((i + this.duration) > currentHour))
-                continue;
+        for(int i = this.start; i< this.end; i+= this.duration) {
 
             if(this.nonAvailabilityTimings.contains(i)) {
                 i++;
             }
+
             Slot slot = new Slot(i, this.duration);
             slots.add(slot);
         }
