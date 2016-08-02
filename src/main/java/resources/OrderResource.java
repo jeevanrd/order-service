@@ -58,6 +58,9 @@ public class OrderResource {
                 throwResponseWithStatus(Response.Status.BAD_REQUEST, "we can't process your order based on input items");
             }
         }
+        
+        newOrder = new Order(items);
+        int minimumCartonCount = newOrder.getMinimumCartonsToFillAllItems(cd);
 
         for(Slot slot : this.slots) {
             int usedCartons = 0;
@@ -67,8 +70,10 @@ public class OrderResource {
 
             int remaining = maxCartonCount - usedCartons;
 
-            if(remaining > 0 && remaining >= items.size()) {
-                newOrder = new Order(slot, items.size(), items);
+            if(remaining > 0 && remaining >= minimumCartonCount) {
+                newOrder.setSlot(slot);
+                newOrder.setCartonCount(minimumCartonCount);
+
                 this.orderDao.save(newOrder);
                 created = true;
                 break;
@@ -79,7 +84,8 @@ public class OrderResource {
             throwResponseWithStatus(Response.Status.PRECONDITION_FAILED, "No slot available");
 
         HashMap<String,Object> output = new HashMap<>();
-        output.put("orderId", newOrder.getId());
+        output.put("orderId", newOrder.getId().toString());
+        output.put("cartonCount", newOrder.getCartonCount());
         output.put("items", newOrder.getItems());
         Slot orderSlot = newOrder.getSlot();
         output.put("slot", orderSlot.getStartTime()  + "-" + (orderSlot.getDuration() + orderSlot.getStartTime()) + " schedule");

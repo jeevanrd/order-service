@@ -43,4 +43,8 @@ public class Dimensions {
     public void setBreadth(int breadth) {
         this.breadth = breadth;
     }
+
+    public int getVolume() {
+        return this.breadth * this.width * this.breadth;
+    }
 }

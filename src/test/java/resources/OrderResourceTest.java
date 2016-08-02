@@ -3,6 +3,7 @@ package resources;
 import com.google.common.collect.ImmutableMap;
 import config.AppConstants;
 import io.dropwizard.configuration.ConfigurationException;
+import models.Dimensions;
 import models.InputItem;
 import models.Order;
 import org.joda.time.DateTime;
@@ -14,10 +15,7 @@ import org.junit.rules.ExpectedException;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -89,6 +87,43 @@ public class OrderResourceTest extends BaseResourceTest {
         orderResource.createOrder(asJson(order));
     }
 
+    @Test
+    public void shouldCreateOrderWithMinimumCartonCountAsOne() throws IOException {
+        Order order = new Order();
+        List<InputItem> items = new ArrayList<>();
+        items.add(new InputItem(10,10,10));
+        items.add(new InputItem(5,5,10));
+        items.add(new InputItem(10,10,10));
+        items.add(new InputItem(5,5,10));
+        items.add(new InputItem(10,10,10));
+        items.add(new InputItem(5,5,10));
+
+        order.setItems(items);
+        Response response = orderResource.createOrder(asJson(order));
+        assertThat(response.getStatus(), is(200));
+        HashMap map = (HashMap<String,Object>) response.getEntity();
+        assertThat(Integer.parseInt(map.get("cartonCount").toString()), is(1));
+    }
+
+    @Test
+    public void shouldCreateOrderWithMinimumCartonCountAsTwo() throws IOException {
+        Order order = new Order();
+        List<InputItem> items = new ArrayList<>();
+        items.add(new InputItem(10,20,10));
+        items.add(new InputItem(10,20,10));
+        items.add(new InputItem(10,20,10));
+        items.add(new InputItem(10,20,10));
+        items.add(new InputItem(5,5,10));
+        items.add(new InputItem(5,5,10));
+        items.add(new InputItem(5,5,10));
+
+        order.setItems(items);
+        Response response = orderResource.createOrder(asJson(order));
+        assertThat(response.getStatus(), is(200));
+        HashMap map = (HashMap<String,Object>) response.getEntity();
+        assertThat(Integer.parseInt(map.get("cartonCount").toString()), is(2));
+
+    }
 
     @Test
     public void shouldGetEmptyOrders() throws IOException {
@@ -106,4 +141,5 @@ public class OrderResourceTest extends BaseResourceTest {
         List<Map<String,Object>> orders = (List<Map<String, Object>>) response.getEntity();
         assertThat(orders.size(), is(1));
     }
+
 }

@@ -62,7 +62,6 @@ public class SlotSchedule {
             if (slot.slotValid())
                 availableSlots.add(slot);
         }
-
         return availableSlots;
     }
 
