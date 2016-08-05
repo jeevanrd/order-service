@@ -2,6 +2,9 @@ package models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dimensions {
     @JsonProperty
     private int height;
@@ -46,5 +49,38 @@ public class Dimensions {
 
     public int getVolume() {
         return this.breadth * this.width * this.breadth;
+    }
+
+    public List<Integer> getDimensionsArray() {
+        List<Integer> dims = new ArrayList<>();
+        dims.add(this.getBreadth());
+        dims.add(this.getWidth());
+        dims.add(this.getHeight());
+        return dims;
+    }
+
+    public void decreaseDimensions(Dimensions itemDim) {
+        this.breadth = this.breadth - itemDim.getBreadth();
+        this.width = this.width - itemDim.getWidth();
+        this.height = this.height - itemDim.getHeight();
+    }
+
+    public void decreaseBreadthDimension(int value) {
+        this.breadth = this.breadth - value;
+    }
+
+    public void decreaseWidthDimension(int value) {
+        this.width = this.width - value;
+    }
+
+    public void decreaseHeightDimension(int value) {
+        this.height = this.height - value;
+    }
+
+
+    public Boolean checkDim(Dimensions itemDim) {
+        return this.width == itemDim.getWidth()
+                && this.breadth == itemDim.getBreadth()
+                && this.height == itemDim.getHeight();
     }
 }

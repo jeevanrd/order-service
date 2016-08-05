@@ -3,6 +3,7 @@ package models;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(noClassnameStored = true)
@@ -67,34 +68,68 @@ public class Order {
     }
 
     public int getMinimumCartonsToFillAllItems(Dimensions cd) {
-        int cartonVol = cd.getBreadth() * cd.getWidth() * cd.getHeight();
-        int maxCartonCount = 0;
-        int remainingCartonVol = cartonVol;
+
+        List<CartonFitter> usedCartons = new ArrayList<>();
 
         if(this.items.size() == 0)
+            return 0;
+
+        List<InputItem> itemsInAscOrder = sortListByVolInAscOrder(this.getItems());
+        if(itemsInAscOrder.get(0).checkDim(itemsInAscOrder.get(itemsInAscOrder.size() - 1))) {
+
+            int cartonVol = cd.getBreadth() * cd.getWidth() * cd.getHeight();
+            int maxCartonCount = 0;
+            int remainingCartonVol = cartonVol;
+
+            for(InputItem item: itemsInAscOrder) {
+                int itemVol = item.getVolume();
+                if(itemVol <= remainingCartonVol) {
+                    remainingCartonVol = remainingCartonVol - itemVol;
+                } else {
+                    maxCartonCount += 1;
+                    remainingCartonVol = cartonVol;
+                }
+            }
+
+            if(remainingCartonVol > 0)
+                maxCartonCount += 1;
+
             return maxCartonCount;
 
-        List<InputItem> sortItems = sortListByVol(this.getItems());
+        } else {
+            List<InputItem> sortItems = sortListByVolDescOrder(this.getItems());
 
-        for(InputItem item: sortItems) {
-            int itemVol = item.getVolume();
-            if(itemVol <= remainingCartonVol) {
-                remainingCartonVol = remainingCartonVol - itemVol;
-            } else {
-                maxCartonCount += 1;
-                remainingCartonVol = cartonVol;
+            usedCartons.add(new CartonFitter(cd));
+
+            for (InputItem item : sortItems) {
+                Boolean fittedInUsedCarton = false;
+                for (CartonFitter cartonFinder : usedCartons) {
+                    fittedInUsedCarton = cartonFinder.arrangeItemAlongDimensionWise(item);
+
+                    if (fittedInUsedCarton)
+                        break;
+
+                }
+
+                if (!fittedInUsedCarton) {
+                    CartonFitter newCarton = new CartonFitter(cd);
+                    newCarton.arrangeItemAlongDimensionWise(item);
+                    usedCartons.add(newCarton);
+                }
+
             }
+
+            return usedCartons.size();
         }
-
-        if(remainingCartonVol > 0)
-            maxCartonCount += 1;
-
-        return maxCartonCount;
     }
 
-    public List<InputItem> sortListByVol(List<InputItem> inputItems) {
+    public List<InputItem> sortListByVolDescOrder(List<InputItem> inputItems) {
         inputItems.sort(new DimensionsComparator());
         return inputItems;
     }
 
+    public List<InputItem> sortListByVolInAscOrder(List<InputItem> inputItems) {
+        inputItems.sort(new DimensionsAscComparator());
+        return inputItems;
+    }
 }

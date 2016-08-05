@@ -95,14 +95,12 @@ public class OrderResourceTest extends BaseResourceTest {
         items.add(new InputItem(5,5,10));
         items.add(new InputItem(10,10,10));
         items.add(new InputItem(5,5,10));
-        items.add(new InputItem(10,10,10));
-        items.add(new InputItem(5,5,10));
 
         order.setItems(items);
         Response response = orderResource.createOrder(asJson(order));
         assertThat(response.getStatus(), is(200));
         HashMap map = (HashMap<String,Object>) response.getEntity();
-        assertThat(Integer.parseInt(map.get("cartonCount").toString()), is(1));
+        assertThat(Integer.parseInt(map.get("cartonCount").toString()), is(2));
     }
 
     @Test
@@ -111,9 +109,6 @@ public class OrderResourceTest extends BaseResourceTest {
         List<InputItem> items = new ArrayList<>();
         items.add(new InputItem(10,20,10));
         items.add(new InputItem(10,20,10));
-        items.add(new InputItem(10,20,10));
-        items.add(new InputItem(10,20,10));
-        items.add(new InputItem(5,5,10));
         items.add(new InputItem(5,5,10));
         items.add(new InputItem(5,5,10));
 
